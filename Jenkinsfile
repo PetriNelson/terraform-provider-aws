@@ -6,9 +6,6 @@ pipeline {
             args  '--entrypoint="" -u root -v /opt/jenkins/.aws:/root/.aws'
         }
     }
-    options {
-        ansiColor('xterm')
-    }
     parameters {
         choice(
             choices: ['preview' , 'apply' , 'show', 'preview-destroy' , 'destroy'],
