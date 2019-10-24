@@ -1,31 +1,26 @@
 pipeline {
-  agent {
-    docker {
-      image 'hashicorp/terraform:latest'
-      args '--entrypoint="" -u root -v /opt/jenkins/.aws:/root/.aws'
-    }
-
-  }
-  stages {
-    stage('Init Infra') {
-      parallel {
-        stage('Init Infra') {
-          steps {
-            echo 'Starting init Terraform'
-          }
+    agent {
+        docker {
+            image 'hashicorp/terraform:latest'
+            label 'LINUX-SLAVE'
+            args  '--entrypoint="" -u root -v /opt/jenkins/.aws:/root/.aws'
         }
-        stage('step1') {
-          steps {
-            echo 'step1'
-          }
+    }
+    options {
+        ansiColor('xterm')
+    }
+    parameters {
+        choice(
+            choices: ['preview' , 'apply' , 'show', 'preview-destroy' , 'destroy'],
+            description: 'Terraform action to apply',
+            name: 'action')
+        string(defaultValue: "default", description: 'Which AWS Account (Boto profile) do you want to target?', name: 'AWS_PROFILE')
+    }
+    stages {
+        stage('init') {
+            steps {
+                sh 'terraform version'
+            }
         }
-      }
     }
-    stage('Log') {
-      steps {
-        echo 'sasa'
-        echo 'Slut'
-      }
-    }
-  }
 }
